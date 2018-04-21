@@ -1,4 +1,5 @@
 import os
+import pymysql
 
 from flask import Flask, request, render_template, redirect, url_for, flash, make_response, session
 app = Flask(__name__)
@@ -32,7 +33,25 @@ def welcome():
         return redirect(url_for('login'))
 
 def valid_login(username, password):
-    if username == password:
+    #mysql
+    MYSQL_DATABASE_HOST = 'sql3.freesqldatabase.com'
+    MYSQL_DATABASE_USER = 'sql3233839'
+    MYSQL_DATABASE_PASSWORD = 'REEwreYmFL'
+    MYSQL_DATABASE_DB = 'sql3233839'
+    MYSQL_DATABASE_PORT = 3306
+
+    conn = pymysql.connect(
+        host=MYSQL_DATABASE_HOST,
+        user=MYSQL_DATABASE_USER,
+        passwd=MYSQL_DATABASE_PASSWORD,
+        db=MYSQL_DATABASE_DB,
+        port=MYSQL_DATABASE_PORT
+        )
+    cursor = conn.cursor()
+    cursor.execute("SELECT * from user WHERE username='%s' AND password='%s'" %(username,password))
+    data = cursor.fetchone()
+
+    if data:
         return True
     else:
         return False
